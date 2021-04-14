@@ -5,8 +5,7 @@ do curso de [Videojogos][licvideo] da [ULHT].
 
 Durante as aulas, vão ser executados uma série de passos que vão levar deste projecto inicial até ao resultado final, em que cada branch corresponde a uma aula.
 
-Os assets de personagens e cenários usados pertencem ao pacote [Sunnyland], disponível gratuitamente na Asset Store, criado por Ansimuz. 
-O icon do coração foi criado por [DontMind8]
+Os assets de personagens e cenários usados pertencem ao pacote [Sunnyland], disponível gratuitamente na Asset Store, criado por Ansimuz.
 
 Todos os direitos pertencem ao autor original.
 
