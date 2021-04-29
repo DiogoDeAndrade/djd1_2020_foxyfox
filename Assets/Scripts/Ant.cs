@@ -2,80 +2,66 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ant : MonoBehaviour
+public class Ant : Character
 {
     [SerializeField]
     private float       moveDir = -1.0f;
     [SerializeField]
     private float       moveSpeed = 100.0f;
-    private Rigidbody2D rb;
-    [SerializeField]    
-    private Transform   groundCheckObject;
     [SerializeField]    
     private Transform   wallCheckObject;
-    [SerializeField]
-    private float       groundCheckRadius = 3.0f;
-    [SerializeField]
-    private LayerMask   groundCheckLayer;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-    }
+    protected override bool knockbackOnHit => false;
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        Collider2D groundCollider = Physics2D.OverlapCircle(groundCheckObject.position, groundCheckRadius, groundCheckLayer);
-
-        bool hasGround = (groundCollider != null);
-
-        Collider2D wallCollider = Physics2D.OverlapCircle(wallCheckObject.position, groundCheckRadius, groundCheckLayer);
-
-        bool hasWall = (wallCollider != null);
-
-        if ((!hasGround) || (hasWall))
+        if (!isDead)
         {
-            moveDir = -moveDir;
+            bool hasGround = IsGround();
+
+            Collider2D wallCollider = Physics2D.OverlapCircle(wallCheckObject.position, groundCheckRadius, groundCheckLayer);
+
+            bool hasWall = (wallCollider != null);
+
+            if ((!hasGround) || (hasWall))
+            {
+                moveDir = -moveDir;
+            }
+
+            Vector2 currentVelocity = rb.velocity;
+
+            currentVelocity.x = moveDir * moveSpeed;
+
+            if (canMove)
+            {
+                rb.velocity = currentVelocity;
+            }
+
+            TurnTo(currentVelocity.x);
         }
 
-        Vector2 currentVelocity = rb.velocity;
-
-        currentVelocity.x = moveDir * moveSpeed;
-
-        rb.velocity = currentVelocity;
-
-        if (currentVelocity.x < -0.1)
-        {
-            Vector3 currentRotation = transform.rotation.eulerAngles;
-            currentRotation.y = 0;
-            transform.rotation = Quaternion.Euler(currentRotation);
-        }
-        else if (currentVelocity.x > 0.1)
-        {
-            Vector3 currentRotation = transform.rotation.eulerAngles;
-            currentRotation.y = 180;
-            transform.rotation = Quaternion.Euler(currentRotation);
-        }
+        base.Update();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Player player = collision.GetComponent<Player>();
-        if (player != null)
+        Character character = collision.GetComponent<Character>();
+        if (character != null)
         {
-            player.TakeDamage(1);
+            if (character.IsHostile(faction))
+            {
+                Vector2 hitDirection = character.transform.position - transform.position;
+
+                character.DealDamage(1, hitDirection);
+            }
         }
     }
 
-    private void OnDrawGizmosSelected()
+    protected override void OnDrawGizmosSelected()
     {
-        if (groundCheckObject != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(groundCheckObject.position, groundCheckRadius);
-        }
+        base.OnDrawGizmosSelected();
+
         if (wallCheckObject != null)
         {
             Gizmos.color = Color.cyan;

@@ -18,6 +18,15 @@ public class CameraFollow : MonoBehaviour
 
         if (followTarget != null)
         {
+            Character character = followTarget.GetComponent<Character>();
+            if (character != null)
+            {
+                if (character.isDead)
+                {
+                    return;
+                }
+            }
+
             Vector3 targetPos = followTarget.position;
             Vector3 error = targetPos - currentPos;
 
