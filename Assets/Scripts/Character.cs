@@ -7,6 +7,8 @@ public class Character : MonoBehaviour
     public enum Faction { Friend, Enemy };
 
     [SerializeField]
+    GameObject            gfx;
+    [SerializeField]
     protected Faction     faction;
     [SerializeField]
     protected int         maxHearts = 3;
@@ -28,6 +30,8 @@ public class Character : MonoBehaviour
     protected float       hitKnockbackDuration = 0.2f;
     [SerializeField]
     protected GameObject  deathPrefab;
+    [SerializeField]
+    protected LayerMask   dealDamageLayers;
 
     protected Rigidbody2D       rb;
     protected SpriteRenderer    spriteRenderer;
@@ -44,11 +48,14 @@ public class Character : MonoBehaviour
 
     protected virtual bool knockbackOnHit => true;
 
+    public int nHearts => hearts;
+    public int nMaxHearts => maxHearts;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
+        spriteRenderer = gfx.GetComponent<SpriteRenderer>();
+        animator = gfx.GetComponent<Animator>();
 
         hearts = maxHearts;
     }
@@ -136,15 +143,15 @@ public class Character : MonoBehaviour
     {
         if (dirX < -0.1)
         {
-            Vector3 currentRotation = transform.rotation.eulerAngles;
+            Vector3 currentRotation = gfx.transform.rotation.eulerAngles;
             currentRotation.y = 0;
-            transform.rotation = Quaternion.Euler(currentRotation);
+            gfx.transform.rotation = Quaternion.Euler(currentRotation);
         }
         else if (dirX > 0.1)
         {
-            Vector3 currentRotation = transform.rotation.eulerAngles;
+            Vector3 currentRotation = gfx.transform.rotation.eulerAngles;
             currentRotation.y = 180;
-            transform.rotation = Quaternion.Euler(currentRotation);
+            gfx.transform.rotation = Quaternion.Euler(currentRotation);
         }
     }
 

@@ -20,6 +20,9 @@ public class Player : Character
     private float           hAxis;
     private int             nJumps;
     private float           timeOfJump;
+    private int             currentScore = 0;
+
+    public int score => currentScore;
 
     void FixedUpdate()
     {
@@ -84,16 +87,29 @@ public class Player : Character
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Character character = collision.GetComponent<Character>();
-        if (character != null)
+        Debug.Log("Player collided with " + collision.name);
+
+        int layerId = collision.gameObject.layer;
+        int checkLayer = dealDamageLayers.value & (1 << layerId);
+
+        if (checkLayer == 0)
         {
-            if (rb.velocity.y < -50.0f)
+            Character character = collision.GetComponentInParent<Character>();
+            if (character != null)
             {
-                character.DealDamage(1, Vector2.down);
+                if (rb.velocity.y < -50.0f)
+                {
+                    character.DealDamage(1, Vector2.down);
 
-                rb.velocity = Vector2.up * knockbackVelocity;
+                    rb.velocity = Vector2.up * knockbackVelocity;
 
-                knockbackTimer = hitKnockbackDuration;
+                    knockbackTimer = hitKnockbackDuration;
+
+                    if (character.isDead)
+                    {
+                        currentScore++;
+                    }
+                }
             }
         }
     }

@@ -46,14 +46,22 @@ public class Ant : Character
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Character character = collision.GetComponent<Character>();
-        if (character != null)
-        {
-            if (character.IsHostile(faction))
-            {
-                Vector2 hitDirection = character.transform.position - transform.position;
+        Debug.Log("Ant collided with " + collision.name);
 
-                character.DealDamage(1, hitDirection);
+        int layerId = collision.gameObject.layer;
+        int checkLayer = dealDamageLayers.value & (1 << layerId);
+
+        if (checkLayer == 0)
+        {
+            Character character = collision.GetComponentInParent<Character>();
+            if (character != null)
+            {
+                if (character.IsHostile(faction))
+                {
+                    Vector2 hitDirection = character.transform.position - transform.position;
+
+                    character.DealDamage(1, hitDirection);
+                }
             }
         }
     }
