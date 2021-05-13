@@ -280,6 +280,8 @@ MonoBehaviour:
   moveDir: -1
   moveSpeed: 100
   wallCheckObject: {fileID: 6468860252309271341}
+  acidPrefab: {fileID: 4747199095236090749, guid: b2ef90b400b461e489b1409461cee14f,
+    type: 3}
 --- !u!1 &6468860252693929943
 GameObject:
   m_ObjectHideFlags: 0

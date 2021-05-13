@@ -113,6 +113,8 @@ public class Character : MonoBehaviour
                 Destroy(gameObject, 2.0f);
             }
 
+            OnDeath();
+
             animator.SetTrigger("Die");
         }
         else
@@ -177,5 +179,10 @@ public class Character : MonoBehaviour
         if (faction != this.faction) return true;
 
         return false;
+    }
+
+    protected virtual void OnDeath()
+    {
+
     }
 }

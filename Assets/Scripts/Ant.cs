@@ -5,11 +5,13 @@ using UnityEngine;
 public class Ant : Character
 {
     [SerializeField]
-    private float       moveDir = -1.0f;
+    private float moveDir = -1.0f;
     [SerializeField]
-    private float       moveSpeed = 100.0f;
-    [SerializeField]    
-    private Transform   wallCheckObject;
+    private float moveSpeed = 100.0f;
+    [SerializeField]
+    private Transform wallCheckObject;
+    [SerializeField]
+    private GameObject acidPrefab;
 
     protected override bool knockbackOnHit => false;
 
@@ -46,8 +48,6 @@ public class Ant : Character
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Ant collided with " + collision.name);
-
         int layerId = collision.gameObject.layer;
         int checkLayer = dealDamageLayers.value & (1 << layerId);
 
@@ -74,6 +74,14 @@ public class Ant : Character
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawSphere(wallCheckObject.position, groundCheckRadius);
+        }
+    }
+
+    protected override void OnDeath()
+    {
+        if (acidPrefab)
+        {
+            Instantiate(acidPrefab, transform.position, transform.rotation);
         }
     }
 }

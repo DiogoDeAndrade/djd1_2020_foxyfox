@@ -3,24 +3,28 @@
 public class Player : Character
 {
     [SerializeField]
-    private float       moveSpeed = 20.0f;
+    private float moveSpeed = 20.0f;
     [SerializeField]
-    private float       jumpSpeed = 100.0f;
+    private float jumpSpeed = 100.0f;
     [SerializeField]
-    private float       maxJumpTime = 0.1f;
+    private float maxJumpTime = 0.1f;
     [SerializeField]
-    private int         maxJumps = 1;
+    private int maxJumps = 1;
     [SerializeField]
-    private int         jumpGravityStart = 1;
+    private int jumpGravityStart = 1;
     [SerializeField]
-    Collider2D          groundCollider;
+    Collider2D groundCollider;
     [SerializeField]
-    Collider2D          airCollider;
+    Collider2D airCollider;
+    [SerializeField]
+    float useRadius = 50;
+    [SerializeField]
+    LayerMask useLayer;
 
-    private float           hAxis;
-    private int             nJumps;
-    private float           timeOfJump;
-    private int             currentScore = 0;
+    private float hAxis;
+    private int nJumps;
+    private float timeOfJump;
+    private int currentScore = 0;
 
     public int score => currentScore;
 
@@ -57,7 +61,7 @@ public class Player : Character
 
             timeOfJump = Time.time;
         }
-        else 
+        else
         {
             float elapsedTimeSinceJump = Time.time - timeOfJump;
             if ((Input.GetButton("Jump")) && (elapsedTimeSinceJump < maxJumpTime))
@@ -82,13 +86,24 @@ public class Player : Character
             airCollider.enabled = !isGround;
         }
 
+        if (Input.GetButtonDown("Use"))
+        {
+            Collider2D collider = Physics2D.OverlapCircle(transform.position, useRadius, useLayer);
+            if (collider)
+            {
+                DialogueCharacter dc = collider.GetComponent<DialogueCharacter>();
+                if (dc)
+                {
+                    dc.StartDialogue(spriteRenderer);
+                }
+            }
+        }
+
         base.Update();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Player collided with " + collision.name);
-
         int layerId = collision.gameObject.layer;
         int checkLayer = dealDamageLayers.value & (1 << layerId);
 
@@ -112,5 +127,23 @@ public class Player : Character
                 }
             }
         }
+    }
+
+    protected override void OnDeath()
+    {
+        GameMng gameManager = FindObjectOfType<GameMng>();
+        gameManager.BackToMainMenu(2);
+        gameManager.UpdateHighscore(score);
+
+        GameOver gameOverObj = FindObjectOfType<GameOver>(true);
+        gameOverObj.Activate();
+    }
+
+    protected override void OnDrawGizmosSelected()
+    {
+        base.OnDrawGizmosSelected();
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, useRadius);
     }
 }
