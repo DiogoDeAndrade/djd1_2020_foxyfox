@@ -32,6 +32,10 @@ public class Character : MonoBehaviour
     protected GameObject  deathPrefab;
     [SerializeField]
     protected LayerMask   dealDamageLayers;
+    [SerializeField]
+    AudioSource           hurtSound;
+    [SerializeField]
+    AudioClip             dieSoundClip;
 
     protected Rigidbody2D       rb;
     protected SpriteRenderer    spriteRenderer;
@@ -91,6 +95,12 @@ public class Character : MonoBehaviour
 
         hearts = hearts - damage;
 
+        if (hurtSound != null)
+        {
+            hurtSound.pitch = Random.Range(0.75f, 1.25f);
+            hurtSound.Play();
+        }
+
         if (hearts == 0)
         {
             if (deathPrefab)
@@ -116,6 +126,8 @@ public class Character : MonoBehaviour
             OnDeath();
 
             animator.SetTrigger("Die");
+
+            SoundManager.instance.PlaySound(dieSoundClip, 1.0f, Random.Range(0.75f, 1.25f));
         }
         else
         {

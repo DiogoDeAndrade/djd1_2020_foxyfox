@@ -20,6 +20,8 @@ public class Player : Character
     float useRadius = 50;
     [SerializeField]
     LayerMask useLayer;
+    [SerializeField]
+    AudioSource jumpSound;
 
     private float hAxis;
     private int nJumps;
@@ -60,6 +62,10 @@ public class Player : Character
             rb.gravityScale = jumpGravityStart;
 
             timeOfJump = Time.time;
+
+            jumpSound.pitch = Random.Range(0.8f, 1.2f);
+            jumpSound.volume = Random.Range(0.7f, 1.0f);
+            jumpSound.Play();
         }
         else
         {

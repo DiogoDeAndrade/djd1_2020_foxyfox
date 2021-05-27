@@ -6,6 +6,11 @@ public class Acid : MonoBehaviour
 {
     [SerializeField] Character.Faction faction;
 
+    private void Start()
+    {
+        Destroy(gameObject, 4.0f);
+    }
+
     private void OnTriggerStay2D(Collider2D collision)
     {
         Character character = collision.GetComponentInParent<Character>();
