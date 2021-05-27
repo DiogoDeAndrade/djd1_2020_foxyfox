@@ -17,6 +17,8 @@ TagManager:
   - Props
   - HurtZones
   - Interactable
+  - Blocker
+  - NonBlocker
   - 
   - 
   - 
@@ -33,10 +35,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - Enemy
+  - Player
   m_SortingLayers:
   - name: Default
     uniqueID: 0
